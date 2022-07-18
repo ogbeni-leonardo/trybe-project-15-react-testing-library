@@ -5,7 +5,7 @@ import App from '../App';
 
 import renderWithRouter from './utils/renderWithRouter';
 
-test('Se o topo da aplicação contém links fixos', () => {
+test('O topo da aplicação contém links fixos', () => {
   renderWithRouter(<App />);
 
   const links = ['Home', 'About', 'Favorite Pokémons'];
