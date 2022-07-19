@@ -1,24 +1,26 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import NotFound from '../pages/NotFound';
 
+import NotFound from '../pages/NotFound';
 import renderWithRouter from './utils/renderWithRouter';
 
-test('Se a mensagem dá página está sendo exibida', () => {
+test('Se a página contém um título com o texto "Page requested not found"', () => {
   renderWithRouter(<NotFound />);
 
-  const message = screen
-    .getByRole('heading', { name: 'Page requested not found Crying emoji' });
+  const message = screen.getByRole(
+    'heading', { name: 'Page requested not found Crying emoji' },
+  );
 
   expect(message).toBeInTheDocument();
 });
 
-test('A imagem da página está sendo carregada', () => {
+test('A página mostra a imagem padrão', () => {
   renderWithRouter(<NotFound />);
 
-  const alt = 'Pikachu crying because the page requested was not found';
-  const src = 'https://media.giphy.com/media/kNSeTs31XBZ3G/giphy.gif';
+  const image = screen.getByAltText(
+    'Pikachu crying because the page requested was not found',
+  );
 
-  const image = screen.getByAltText(alt);
-  expect(image.src).toBe(src);
+  expect(image).toBeInTheDocument();
+  expect(image.src).toBe('https://media.giphy.com/media/kNSeTs31XBZ3G/giphy.gif');
 });

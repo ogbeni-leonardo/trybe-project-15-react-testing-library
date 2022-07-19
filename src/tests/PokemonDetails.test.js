@@ -16,14 +16,17 @@ const detailsParams = {
   onUpdateFavoritePokemons: () => {},
 };
 
-test('O título da página de detalhes é exibido corretamente', () => {
-  renderWithRouter(<PokemonDetails { ...detailsParams } />);
+test(
+  'O título da página de detalhes é exibido corretamente com o nome do pokémon',
+  () => {
+    renderWithRouter(<PokemonDetails { ...detailsParams } />);
 
-  const detailsTitle = screen.getByRole('heading', { name: 'Pikachu Details' });
-  expect(detailsTitle).toBeInTheDocument();
-});
+    const detailsTitle = screen.getByRole('heading', { name: 'Pikachu Details' });
+    expect(detailsTitle).toBeInTheDocument();
+  },
+);
 
-test('O sumário do pokémon é exbibido corretamente', () => {
+test('O sumário do pokémon é exibido corretamente', () => {
   renderWithRouter(<PokemonDetails { ...detailsParams } />);
 
   const summary = screen.getByText(data[0].summary);

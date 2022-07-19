@@ -3,48 +3,50 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import data from '../data';
-import { Pokemon } from '../components';
 import renderWithRouter from './utils/renderWithRouter';
+import Pokemon from '../components/Pokemon';
 
-test('Ao carregar a página do Pokémon verifique se o tipo dele é exibido', () => {
-  renderWithRouter(
-    <Pokemon pokemon={ data[0] } isFavorite={ false } showDetailsLink={ false } />,
-  );
+const pokemonParams = {
+  pokemon: data[0],
+  showDetailsLink: true,
+  isFavorite: true,
+};
 
-  const type = screen.getByTestId('pokemon-type');
-  expect(type).toBeInTheDocument();
-  expect(type).not.toHaveTextContent('');
+test('A página renderiza os dados de um determinado pokémon', () => {
+  renderWithRouter(<Pokemon { ...pokemonParams } />);
+
+  const pikachuImage = screen.getByAltText('Pikachu sprite');
+
+  expect(pikachuImage).toBeInTheDocument();
+  expect(pikachuImage.src).toBe('https://cdn2.bulbagarden.net/upload/b/b2/Spr_5b_025_m.png');
+
+  expect(screen.getByText('Pikachu')).toBeInTheDocument();
+  expect(screen.getByText('Electric')).toBeInTheDocument();
+  expect(screen.getByText('Average weight: 6.0 kg')).toBeInTheDocument();
+});
+
+test('O card contém o link para mais detalhes com a URL válida', () => {
+  renderWithRouter(<Pokemon { ...pokemonParams } />);
+
+  const detailsLink = screen.getByRole('link', { name: 'More details' });
+  expect(detailsLink.href).toContain('/pokemons/25');
 });
 
 test(
-  `Ao clicar no link de detalhes do pokémon a aplicação é redirecionada 
-  para a página de detalhes`,
+  'Ao clicar no link de detalhes a página é redirecionada para a página de'
+    + 'detalhes do pokémon',
   () => {
-    const { history } = renderWithRouter(
-      <Pokemon pokemon={ data[0] } isFavorite={ false } />,
-    );
+    const { history } = renderWithRouter(<Pokemon { ...pokemonParams } />);
 
-    const detailsLink = screen.getByRole('link', 'More details');
+    const detailsLink = screen.getByRole('link', { name: 'More details' });
     userEvent.click(detailsLink);
 
     expect(history.location.pathname).toBe('/pokemons/25');
   },
 );
 
-test('A imagem do pokémon é exibida na tela', () => {
-  renderWithRouter(
-    <Pokemon pokemon={ data[0] } isFavorite={ false } showDetailsLink={ false } />,
-  );
-
-  const pokemonImage = screen.getByAltText('Pikachu sprite');
-  expect(pokemonImage).toBeInTheDocument();
-  expect(pokemonImage.src).toBe('https://cdn2.bulbagarden.net/upload/b/b2/Spr_5b_025_m.png');
-});
-
-test('Se o pokémon é um dos favoritos a imagem da estrela é exibida', () => {
-  renderWithRouter(
-    <Pokemon pokemon={ data[0] } isFavorite />,
-  );
+test('Existe um ícone de estrela no pokémon favoritado', () => {
+  renderWithRouter(<Pokemon { ...pokemonParams } />);
 
   const starImage = screen.getByAltText('Pikachu is marked as favorite');
   expect(starImage).toBeInTheDocument();
